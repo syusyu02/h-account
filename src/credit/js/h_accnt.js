@@ -1,11 +1,16 @@
-var GLOVAL_EVENT = {};
-
 var h_accnt = (function () {
     'use strict';
-    var initModule = function ( $container ) {
+    var
+        H_ACCNT_EVENT = {},
+        initModule;
+
+    initModule = function ($container) {
         h_accnt.shell.initModule($container);
         h_accnt.model.initModule();
     };
 
-    return { initModule: initModule };
+    return {
+        initModule: initModule,
+        H_ACCNT_EVENT: H_ACCNT_EVENT
+    };
 }());

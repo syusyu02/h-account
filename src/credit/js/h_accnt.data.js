@@ -4,23 +4,15 @@ h_accnt.data = (function () {
         initModule, openFile,
         sendEventWithCsv, sendEventWithCsvOfMaster, sendEventWithCsvOfTransaction, dfdGetCsv, handleErr;
 
-    openFile = function (fileNm) {
-        dfdGetCsv('./data/transaction/' + fileNm).done(sendEventWithCsvOfTransaction).fail(handleErr);
-    }
-
-    initModule = function () {
-        dfdGetCsv('./data/zaim_master.csv').done(sendEventWithCsvOfMaster).fail(handleErr);
-    };
-
-    dfdGetCsv = function (csvUrl) {
+    dfdGetCsv = function (filePath) {
         var dfd = jQuery.Deferred();
         $.ajax({
             beforeSend: function (xhr) {
                 xhr.overrideMimeType("text/plain; charset=shift_jis");
             },
-            url: csvUrl,
+            url: filePath,
             dataType: 'text',
-            context: {csvUrl: csvUrl},
+            context: {filePath: filePath},
             success: dfd.resolve,
             error: dfd.reject
         });
@@ -28,12 +20,11 @@ h_accnt.data = (function () {
     };
 
     sendEventWithCsvOfMaster = function (data) {
-        $(GLOVAL_EVENT).trigger('data-master-changed', {contents: data});
+        $(h_accnt.H_ACCNT_EVENT).trigger('data-master-changed', {csv: data, filePath: this.filePath});
     };
 
     sendEventWithCsvOfTransaction = function (data) {
-        var fileType = h_accnt.util.decideFileType(this.csvUrl);
-        $(GLOVAL_EVENT).trigger('data-transaction-changed', {contents: data, fileType: fileType});
+        $(h_accnt.H_ACCNT_EVENT).trigger('data-transaction-changed', {csv: data, filePath: this.filePath});
     };
 
     handleErr = function () {
@@ -41,6 +32,16 @@ h_accnt.data = (function () {
         alert(errmsg);
         console.log(errmsg);
     };
+
+    //----- Begin public method -----//
+    initModule = function () {
+        dfdGetCsv('./data/zaim_master.csv').done(sendEventWithCsvOfMaster).fail(handleErr);
+    };
+
+    openFile = function (fileNm) {
+        dfdGetCsv('./data/transaction/' + fileNm).done(sendEventWithCsvOfTransaction).fail(handleErr);
+    }
+    //----- End public method -----//
 
     return {
         initModule: initModule,
