@@ -15,7 +15,13 @@ h_accnt.model = (function () {
 
     usageRecordProto = {
         getHtml: function () {
-            return this.date + ', '  + this.place + ', ' + this.price + '<br />';
+            return this.date
+                + (!this.category ? '' : this.category + ', ')
+                + (!this.purpose ? '' : this.purpose + ', ')
+                + (!this.memo ? '' : this.memo + ', ')
+                + ', ' + this.place
+                + ', ' + this.price
+                + '<br />';
         },
 
         getDuplicateCheckKey: function () {
@@ -50,7 +56,9 @@ h_accnt.model = (function () {
                 date: cols[this.colDate],
                 place: cols[this.colPlace],
                 price: cols[this.colPrice],
-                purpose: this.colPurpose ? cols[this.colPurpose] : '',
+                category: !this.colCategory ? '' : cols[this.colCategory],
+                purpose: !this.colPurpose ? '' : cols[this.colPurpose],
+                memo: !this.colMemo? '' : cols[this.colMemo],
             });
         }
     };
@@ -63,8 +71,10 @@ h_accnt.model = (function () {
         usage_record_creator.colDate = col_map.colDate;
         usage_record_creator.colPlace = col_map.colPlace;
         usage_record_creator.colPrice = col_map.colPrice;
+        usage_record_creator.colCategory = col_map.colCategory;
         usage_record_creator.colPurpose = col_map.colPurpose;
-        
+        usage_record_creator.colMemo = col_map.colMemo;
+
         return usage_record_creator;
     };
 
